@@ -12,6 +12,19 @@
     <input type="text" name="imageUrl" id="imageUrl" />
     <input type="text" name="brand" id="brand" />
     <input type="text" name="price" id="price" />
-    <button>submit</button>
+    <button onclick="">Submit</button>
+
+    <script>
+      const submitProduct = async () => {
+          let result = await fetch("https://striveschool-api.herokuapp.com/api/product/", {
+              method: "POST"
+              headers: {
+                  "Authorization":"",
+                  "Content type":"application/json"
+
+          }
+          })
+      }
+    </script>
   </body>
 </html>
