@@ -73,9 +73,8 @@
     </div>
 
     <script>
-      let globalVar;
-      const displayForEdit = async () => {
-        let result = await fetch(
+      const displayForEdit = async (data) => {
+        const result = await fetch(
           "https://striveschool-api.herokuapp.com/api/product/",
           {
             method: "GET",
@@ -86,20 +85,24 @@
             },
           }
         );
-        let data = await result.json();
-        console.log(data);
+        if (result.ok) {
+          const data = await result.json();
+          console.log("I am console inside the fetch Function", data);
+          return data;
+        }
 
-        console.log("checking the data", globalVar);
+        console.log("checking the data", data);
       };
 
       const editFunction = async (data) => {
         let row = document.getElementById("for-row");
         row.innerHTML = "";
 
-        const product = await `${data
+        const product = await data
           .map(
-            (item) => `
-                  <div class="card card-height mt-5 mb-2 ">
+            (item) =>
+              //
+              `<div class="card card-height mt-5 mb-2 ">
                       <img src=${item.imageUrl} class="card-img-top image mt-3" >
                       <div class="card-body">
                         <div class=" mb-3 d-flex">
@@ -118,16 +121,16 @@
                     `
           )
           .reverse()
-          .join("")}
-                  `;
+          .join("");
 
         row.innerHTML = product;
+        displayForEdit(data);
       };
-      console.log(data);
+
       //   row.innerHTML += col;
 
-      window.onload = () => {
-        displayForEdit();
+      window.onload = async () => {
+        editFunction();
       };
     </script>
 
