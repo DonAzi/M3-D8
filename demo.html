@@ -96,7 +96,11 @@
         </div>
 
         <script>
+          const params = new URLSearchParams(location.search);
+          const id = params.get("id");
+
           const displayProducts = (data) => {
+            console.log(data);
             const row = document.querySelector(".card-columns");
             const product = `${data
               .map(
@@ -110,8 +114,8 @@
                           <span class="badge badge-secondary ml-2 d-flex align-items-center">
                             £ ${item.price}
                           </span>
-                        <a class="badge badge-warning ml-auto d-flex align-items-center" href="/display.html?id=${item._id}">Edit</a>
-                        <button class="btn btn-danger btn-sm ml-1">Delete</button>
+                        <a class="badge badge-warning ml-auto d-flex align-items-center" href="/index.html?id=${item.userId}">Edit</a>
+                        <button class="btn btn-danger btn-sm ml-1" onclick="deleteBtn()">Delete</button>
                       </div>
                         <h5 class=>${item.name}</h5>
                         <p class="card-text text-tranquit image">${item.description}</div>
@@ -143,9 +147,10 @@
             displayProducts(data);
           };
 
-          const deleteBtn = async () => {
+          const deleteBtn = async (id) => {
             //   const productID = new URLSearchParams()
-            const url = "https://striveschool-api.herokuapp.com/api/product/";
+            const url =
+              "https://striveschool-api.herokuapp.com/api/product/" + id;
             const response = await fetch(url, {
               method: "DELETE",
               headers: {
@@ -156,11 +161,12 @@
             });
             if (response.ok) {
               const events = await response.json();
-              console.log(events);
+              document.querySelector(".card-columns").remove;
             }
           };
           window.onload = () => {
             getItems();
+            deleteBtn(id);
           };
         </script>
         <script

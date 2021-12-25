@@ -65,7 +65,9 @@
         </ul>
       </div>
     </nav>
-    <h2 class="font-weight-bolder text-center my-5">Control Panel</h2>
+    <h2 id="title-page" class="font-weight-bolder text-center my-5">
+      Control Panel
+    </h2>
     <div class="container d-block-flex justify-content-lg-center mt-5">
       <div class="row">
         <div class="col-6 d-block align-content-center">
@@ -87,7 +89,7 @@
           <input
             class="w-100 m-2 inputs"
             type="text"
-            placeholder="URL of your product.."
+            placeholder="img URL of your product.."
             name="imageUrl"
             id="imageUrl"
           />
@@ -116,6 +118,9 @@
     </div>
 
     <script>
+      const params = new URLSearchParams(location.search);
+      const id = params.get("id");
+
       const submitProduct = async () => {
         let product = {
           name: document.querySelector("#name").value,
@@ -124,11 +129,11 @@
           brand: document.querySelector("#brand").value,
           price: document.querySelector("#price").value,
         };
-
+        const method = id ? "PUT" : "POST";
         let response = await fetch(
           "https://striveschool-api.herokuapp.com/api/product/",
           {
-            method: "POST",
+            method,
             body: JSON.stringify(product),
             headers: {
               Authorization:
@@ -137,6 +142,7 @@
             },
           }
         );
+        console.log("This is TEST line 137", response);
 
         if (response.ok) {
           alert("success");
@@ -153,6 +159,32 @@
         };
       };
 
+      const getProductDetailsId = async (id) => {
+        let result = await fetch(
+          "https://striveschool-api.herokuapp.com/api/product/" + id,
+          {
+            headers: {
+              Authorization:
+                "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MWIyMDAzOTY4YjNlMDAwMTViN2FjYjEiLCJpYXQiOjE2MzkwNTU0MTgsImV4cCI6MTY0MDI2NTAxOH0.XTaSP1lDIsQ_Ug_tZNsfvN_fuvKMP8Jx1AsQTiyG7VA",
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        // console.log("Hey I am Result-->", result);
+        const product = await result.json();
+        console.log("PARSED DATA", product);
+
+        Object.keys(product).forEach((key) => {
+          // const field =
+          document.querySelector(`#${key}`).value = product[key];
+        });
+      };
+      window.onload = () => {
+        if (id) {
+          document.getElementById("title-page").innerHTML = "Edit Product";
+          getProductDetailsId(id);
+        }
+      };
       //From the front end have a button that opens a details page
       //on the details page have a button taht opens the back offic and sends the product id in the url
       //in the back office have a conditional if the url has an id then the method in the subit fetch is "put" else it is post
